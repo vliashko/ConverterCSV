@@ -63,8 +63,10 @@ namespace StarterTest.WinF
         }
         private void удалитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // TODO: Проблемы с реализацией удаления
-            // Почему-то программа не видит dataGridView.SelectedRows
+            var index = dataGridView.CurrentCell.RowIndex;
+
+            dataGridView.Rows.RemoveAt(index);
+
             db.SaveChanges();
             dataGridView.Refresh();
         }
