@@ -90,7 +90,7 @@
             this.excelToolStripMenuItem,
             this.xmlToolStripMenuItem});
             this.экспортToolStripMenuItem.Name = "экспортToolStripMenuItem";
-            this.экспортToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.экспортToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.экспортToolStripMenuItem.Text = "Экспорт";
             // 
             // excelToolStripMenuItem
@@ -103,8 +103,9 @@
             // xmlToolStripMenuItem
             // 
             this.xmlToolStripMenuItem.Name = "xmlToolStripMenuItem";
-            this.xmlToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
+            this.xmlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.xmlToolStripMenuItem.Text = "Xml";
+            this.xmlToolStripMenuItem.Click += new System.EventHandler(this.xmlToolStripMenuItem_Click);
             // 
             // работаСТаблицейToolStripMenuItem
             // 

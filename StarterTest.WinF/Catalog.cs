@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -30,6 +31,10 @@ namespace StarterTest.WinF
         void excelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ExportToExcel();
+        }
+        void xmlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExportToXml();
         }
         void добавитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -76,7 +81,7 @@ namespace StarterTest.WinF
 
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "Excel файлы (*.xlsx)|*.xlsx|All files (*.*)|*.*",
+                Filter = "Excel файлы (*.xlsx)|*.xlsx|Все файлы (*.*)|*.*",
                 Title = "Экспорт в Excel"
             };
 
@@ -165,6 +170,41 @@ namespace StarterTest.WinF
             set.Load();
             dataGridView.DataSource = set.Local.ToBindingList();
             dataGridView.Sort(dataGridView.Columns["Id"], ListSortDirection.Ascending);
+        }
+        void ExportToXml()
+        {
+            string FileName;
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "Xml файлы (*.xml)|*.xml|Все файлы (*.*)|*.*",
+                Title = "Экспорт в Excel"
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                FileName = saveFileDialog.FileName;
+
+                set.Load();
+                List<User> users = set.ToList();
+
+                File.AppendAllText(FileName, "<TestProgram>");
+
+                foreach (var user in users)
+                {
+                    File.AppendAllText(FileName,$"\n\t<Record id=\"{user.Id}\">");
+                    File.AppendAllText(FileName, $"\n\t\t<Date>{user.DateTime}</Date>");
+                    File.AppendAllText(FileName, $"\n\t\t<FirstName>{user.Name}</FirstName>");
+                    File.AppendAllText(FileName, $"\n\t\t<LastName>{user.Surname}</LastName>");
+                    File.AppendAllText(FileName, $"\n\t\t<SurName>{user.MiddleName}</SurName>");
+                    File.AppendAllText(FileName, $"\n\t\t<City>{user.City}</City>");
+                    File.AppendAllText(FileName, $"\n\t\t<Country>{user.Country}</Country>");
+                    File.AppendAllText(FileName, $"\n\t</Record>");
+                }
+
+                File.AppendAllText(FileName, "\n</TestProgram>");
+
+            }
         }
     }
 }
