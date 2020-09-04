@@ -27,7 +27,7 @@ namespace StarterTest.WinF
             LoadDbDate();
         }
 
-        private void excelToolStripMenuItem_Click(object sender, EventArgs e)
+        void excelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ExportToExcel();
         }
@@ -61,7 +61,7 @@ namespace StarterTest.WinF
                 }
             }
         }
-        private void удалитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
+        void удалитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var index = dataGridView.CurrentCell.RowIndex;
 
