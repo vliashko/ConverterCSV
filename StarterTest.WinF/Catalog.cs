@@ -27,15 +27,6 @@ namespace StarterTest.WinF
             LoadDateToDatabase(users);
             LoadDbDate();
         }
-
-        void excelToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ExportToExcel();
-        }
-        void xmlToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ExportToXml();
-        }
         void добавитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var form = new FormAddOrChangeUser();
@@ -49,7 +40,6 @@ namespace StarterTest.WinF
                 dataGridView.Refresh();
             }
         }
-
         void изменитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var index = dataGridView.CurrentCell.RowIndex + 1;
@@ -75,7 +65,17 @@ namespace StarterTest.WinF
             db.SaveChanges();
             dataGridView.Refresh();
         }
-        void ExportToExcel()
+        void выборкаДанныхToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = new ChooseDateToExport();
+            form.ShowDialog();
+            if(form.isExcel)
+                ExportToExcel(form.User);
+            else
+                ExportToXml(form.User);
+
+        }
+        void ExportToExcel(User user)
         {
             string FileName;
 
@@ -171,7 +171,7 @@ namespace StarterTest.WinF
             dataGridView.DataSource = set.Local.ToBindingList();
             dataGridView.Sort(dataGridView.Columns["Id"], ListSortDirection.Ascending);
         }
-        void ExportToXml()
+        void ExportToXml(User user)
         {
             string FileName;
 
@@ -188,17 +188,30 @@ namespace StarterTest.WinF
                 set.Load();
                 List<User> users = set.ToList();
 
+                if(user.Name != null)
+                    users = users.Where(x => x.Name == user.Name).ToList();
+                if (user.Surname != null)
+                    users = users.Where(x => x.Surname == user.Surname).ToList();
+                if (user.MiddleName != null)
+                    users = users.Where(x => x.MiddleName == user.MiddleName).ToList();
+                if (user.DateTime != DateTime.MinValue)
+                    users = users.Where(x => x.DateTime == user.DateTime).ToList();
+                if (user.City != null)
+                    users = users.Where(x => x.City == user.City).ToList();
+                if (user.Country != null)
+                    users = users.Where(x => x.Country == user.Country).ToList();
+
                 File.AppendAllText(FileName, "<TestProgram>");
 
-                foreach (var user in users)
+                foreach (var xUser in users)
                 {
-                    File.AppendAllText(FileName,$"\n\t<Record id=\"{user.Id}\">");
-                    File.AppendAllText(FileName, $"\n\t\t<Date>{user.DateTime}</Date>");
-                    File.AppendAllText(FileName, $"\n\t\t<FirstName>{user.Name}</FirstName>");
-                    File.AppendAllText(FileName, $"\n\t\t<LastName>{user.Surname}</LastName>");
-                    File.AppendAllText(FileName, $"\n\t\t<SurName>{user.MiddleName}</SurName>");
-                    File.AppendAllText(FileName, $"\n\t\t<City>{user.City}</City>");
-                    File.AppendAllText(FileName, $"\n\t\t<Country>{user.Country}</Country>");
+                    File.AppendAllText(FileName,$"\n\t<Record id=\"{xUser.Id}\">");
+                    File.AppendAllText(FileName, $"\n\t\t<Date>{xUser.DateTime}</Date>");
+                    File.AppendAllText(FileName, $"\n\t\t<FirstName>{xUser.Name}</FirstName>");
+                    File.AppendAllText(FileName, $"\n\t\t<LastName>{xUser.Surname}</LastName>");
+                    File.AppendAllText(FileName, $"\n\t\t<SurName>{xUser.MiddleName}</SurName>");
+                    File.AppendAllText(FileName, $"\n\t\t<City>{xUser.City}</City>");
+                    File.AppendAllText(FileName, $"\n\t\t<Country>{xUser.Country}</Country>");
                     File.AppendAllText(FileName, $"\n\t</Record>");
                 }
 
