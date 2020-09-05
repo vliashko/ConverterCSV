@@ -6,7 +6,7 @@ namespace StarterTest.WinF
 {
     public partial class ChooseDateToExport : Form
     {
-        public bool isExcel { get; set; }
+        public bool IsExcel { get; set; }
         public User User { get; set; }
         public ChooseDateToExport()
         {
@@ -16,13 +16,13 @@ namespace StarterTest.WinF
         void button1_Click(object sender, EventArgs e)
         {
             ButtonClick();
-            isExcel = true;
+            IsExcel = true;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             ButtonClick();
-            isExcel = false;
+            IsExcel = false;
         }
 
 
@@ -41,8 +41,8 @@ namespace StarterTest.WinF
                 u.MiddleName = textBox4.Text;
             else
                 u.MiddleName = null;
-            if (textBox1.Text != "")
-                u.DateTime = TryParseDate(textBox1);
+            if (maskedTextBox1.Text != "")
+                u.DateTime = DateTime.Parse(maskedTextBox1.Text);
             if (textBox3.Text != "")
                 u.City = textBox3.Text;
             else
@@ -56,14 +56,23 @@ namespace StarterTest.WinF
             User = u;
             Close();
         }
-        DateTime TryParseDate(TextBox textBox)
+        void textBoxLetter_KeyPress(object sender, KeyPressEventArgs e)
         {
-            bool k = DateTime.TryParse(textBox.Text, out DateTime date);
-            if(!k)
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && l != '\b')
             {
-                date = DateTime.MinValue;
+                e.Handled = true;
             }
-            return date;
+        }
+
+        void maskedTextBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char number = e.KeyChar;
+
+            if (!Char.IsDigit(number))
+            {
+                e.Handled = true;
+            }
         }
     }
 }

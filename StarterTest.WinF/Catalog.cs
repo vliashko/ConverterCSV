@@ -70,7 +70,7 @@ namespace StarterTest.WinF
         {
             var form = new ChooseDateToExport();
             form.ShowDialog();
-            if (form.isExcel)
+            if (form.IsExcel)
                 ExportToExcel(form.User);
             else
                 ExportToXml(form.User);
