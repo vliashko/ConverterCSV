@@ -15,7 +15,7 @@ namespace StarterTest.WinF
         public FormAddOrChangeUser(User user) : this()
         {
             User = user;
-            textBox1.Text = user.DateTime.ToString();
+            textBox1.Text = user.DateTime.ToString("dd.MM.yy");
             textBox2.Text = user.Name;
             textBox5.Text = user.Surname;
             textBox4.Text = user.MiddleName;

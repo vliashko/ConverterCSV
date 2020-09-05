@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -65,17 +66,16 @@ namespace StarterTest.WinF
             db.SaveChanges();
             dataGridView.Refresh();
         }
-        void выборкаДанныхToolStripMenuItem_Click(object sender, EventArgs e)
+        void экспортToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var form = new ChooseDateToExport();
             form.ShowDialog();
-            if(form.isExcel)
+            if (form.isExcel)
                 ExportToExcel(form.User);
             else
                 ExportToXml(form.User);
-
         }
-        void ExportToExcel(User user)
+        async void ExportToExcel(User user)
         {
             string FileName;
 
@@ -92,11 +92,16 @@ namespace StarterTest.WinF
                 Excel.Workbook xlWorkBook = xlApp.Workbooks.Add();
                 Excel.Worksheet xlWorkSheet = xlWorkBook.ActiveSheet;
 
-                for (int i = 1; i < dataGridView.RowCount + 1; i++)
+                List<User> users = GetNecessaryData(user);
+
+                List<string[]> excelUsers = users.Select(x => ConventerUser(x)).ToList();
+
+                for (int i = 1; i < excelUsers.Count + 1; i++)
                 {
-                    for (int j = 1; j < dataGridView.ColumnCount + 1; j++)
+                    for (int j = 1; j < 7; j++)
                     {
-                        xlWorkSheet.Rows[i].Columns[j] = dataGridView.Rows[i - 1].Cells[j - 1].Value;
+                        xlWorkSheet.Rows[i].Columns[j] = excelUsers[i - 1][j - 1];
+                        await Task.Delay(50);
                     }
                 }
 
@@ -108,7 +113,7 @@ namespace StarterTest.WinF
                 ReleaseObject(xlWorkBook);
                 ReleaseObject(xlApp);
 
-                MessageBox.Show("Файл был успешно создан.", "Информация",
+                MessageBox.Show("Данные были успешно добавлены.", "Информация",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
@@ -136,7 +141,7 @@ namespace StarterTest.WinF
 
             openFileDialog.InitialDirectory = @"C:\Users\User\Desktop";
             openFileDialog.Filter = "CSV файлы (*.csv)|*.csv|Все файлы (*.*)|*.*";
-            openFileDialog.Title = "Импорт файла из .csv";
+            openFileDialog.Title = "Импорт файла .csv";
 
             List<User> date = new List<User>();
 
@@ -171,7 +176,7 @@ namespace StarterTest.WinF
             dataGridView.DataSource = set.Local.ToBindingList();
             dataGridView.Sort(dataGridView.Columns["Id"], ListSortDirection.Ascending);
         }
-        void ExportToXml(User user)
+        async void ExportToXml(User user)
         {
             string FileName;
 
@@ -184,40 +189,55 @@ namespace StarterTest.WinF
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 FileName = saveFileDialog.FileName;
-
-                set.Load();
-                List<User> users = set.ToList();
-
-                if(user.Name != null)
-                    users = users.Where(x => x.Name == user.Name).ToList();
-                if (user.Surname != null)
-                    users = users.Where(x => x.Surname == user.Surname).ToList();
-                if (user.MiddleName != null)
-                    users = users.Where(x => x.MiddleName == user.MiddleName).ToList();
-                if (user.DateTime != DateTime.MinValue)
-                    users = users.Where(x => x.DateTime == user.DateTime).ToList();
-                if (user.City != null)
-                    users = users.Where(x => x.City == user.City).ToList();
-                if (user.Country != null)
-                    users = users.Where(x => x.Country == user.Country).ToList();
+                List<User> users = GetNecessaryData(user);
 
                 File.AppendAllText(FileName, "<TestProgram>");
 
                 foreach (var xUser in users)
                 {
-                    File.AppendAllText(FileName,$"\n\t<Record id=\"{xUser.Id}\">");
-                    File.AppendAllText(FileName, $"\n\t\t<Date>{xUser.DateTime}</Date>");
+                    File.AppendAllText(FileName, $"\n\t<Record id=\"{xUser.Id}\">");
+                    File.AppendAllText(FileName, $"\n\t\t<Date>{xUser.DateTime:dd.MM.yy}</Date>");
                     File.AppendAllText(FileName, $"\n\t\t<FirstName>{xUser.Name}</FirstName>");
                     File.AppendAllText(FileName, $"\n\t\t<LastName>{xUser.Surname}</LastName>");
                     File.AppendAllText(FileName, $"\n\t\t<SurName>{xUser.MiddleName}</SurName>");
                     File.AppendAllText(FileName, $"\n\t\t<City>{xUser.City}</City>");
                     File.AppendAllText(FileName, $"\n\t\t<Country>{xUser.Country}</Country>");
                     File.AppendAllText(FileName, $"\n\t</Record>");
+                    await Task.Delay(50);
                 }
 
                 File.AppendAllText(FileName, "\n</TestProgram>");
 
+                MessageBox.Show("Данные были успешно добавлены.", "Информация",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             }
+        }
+
+        private List<User> GetNecessaryData(User user)
+        {
+            set.Load();
+            List<User> users = set.ToList();
+
+            if (user.Name != null)
+                users = users.Where(x => x.Name == user.Name).ToList();
+            if (user.Surname != null)
+                users = users.Where(x => x.Surname == user.Surname).ToList();
+            if (user.MiddleName != null)
+                users = users.Where(x => x.MiddleName == user.MiddleName).ToList();
+            if (user.DateTime != DateTime.MinValue)
+                users = users.Where(x => x.DateTime == user.DateTime).ToList();
+            if (user.City != null)
+                users = users.Where(x => x.City == user.City).ToList();
+            if (user.Country != null)
+                users = users.Where(x => x.Country == user.Country).ToList();
+            return users;
+        }
+        string[] ConventerUser(User user)
+        {
+            string[] result = { user.DateTime.ToString("dd.MM.yy"), user.Name, user.Surname, user.MiddleName, 
+                user.City, user.Country };
+            return result;
         }
     }
 }
