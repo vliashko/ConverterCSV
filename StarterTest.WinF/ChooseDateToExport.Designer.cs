@@ -204,7 +204,7 @@
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label1);
             this.Name = "ChooseDateToExport";
-            this.Text = "Ввод данных для поиска";
+            this.Text = "Ввод данных для экспорта";
             this.ResumeLayout(false);
             this.PerformLayout();
 

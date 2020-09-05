@@ -21,7 +21,9 @@ namespace StarterTest.WinF
             InitializeComponent();
             set = db.Users;
             LoadDbDate();
+            GetRusNameCols();
         }
+
         void импортToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             List<User> users = GetDateFromCsv();
@@ -238,6 +240,16 @@ namespace StarterTest.WinF
             string[] result = { user.DateTime.ToString("dd.MM.yy"), user.Name, user.Surname, user.MiddleName, 
                 user.City, user.Country };
             return result;
+        }
+        void GetRusNameCols()
+        {
+            dataGridView.Columns[0].HeaderText = "АйДи";
+            dataGridView.Columns[1].HeaderText = "Дата";
+            dataGridView.Columns[2].HeaderText = "Имя";
+            dataGridView.Columns[3].HeaderText = "Фамилия";
+            dataGridView.Columns[4].HeaderText = "Отчество";
+            dataGridView.Columns[5].HeaderText = "Город";
+            dataGridView.Columns[6].HeaderText = "Страна";
         }
     }
 }

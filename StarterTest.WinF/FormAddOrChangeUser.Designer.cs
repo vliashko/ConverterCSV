@@ -193,7 +193,7 @@
             this.MinimizeBox = false;
             this.Name = "FormAddOrChangeUser";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Форма";
+            this.Text = "Ввод данных";
             this.ResumeLayout(false);
             this.PerformLayout();
 
