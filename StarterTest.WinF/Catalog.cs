@@ -1,8 +1,10 @@
-﻿using StarterTest.BL;
+﻿using Ganss.Excel;
+using StarterTest.BL;
 using StarterTest.BL.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -13,13 +15,13 @@ using System.Windows.Forms;
 using System.Xml;
 using Excel = Microsoft.Office.Interop.Excel;
 
+
 namespace StarterTest.WinF
 {
     public partial class Catalog : Form
     {
         readonly DBContext db = new DBContext();
         readonly DbSet<User> set;
-        Action LoadDb;
         public Catalog()
         {
             InitializeComponent();
@@ -27,7 +29,7 @@ namespace StarterTest.WinF
         }
         void отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LoadDb += LoadDbDate;
+            Action LoadDb = new Action(LoadDbDate);
             LoadDb += GetRusNameCols;
             Thread thread = new Thread(new ThreadStart(LoadDb));
             thread.Start();
@@ -88,7 +90,7 @@ namespace StarterTest.WinF
             else
                 ExportToXml(form.User);
         }
-        async void ExportToExcel(User searchCriterion)
+        void ExportToExcel(User searchCriterion)
         {
             string FileName;
 
@@ -101,59 +103,25 @@ namespace StarterTest.WinF
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 FileName = saveFileDialog.FileName;
-                Excel.Application xlApp = new Excel.Application();
-                Excel.Workbook xlWorkBook = xlApp.Workbooks.Add();
-                Excel.Worksheet xlWorkSheet = xlWorkBook.ActiveSheet;
 
                 List<User> users = GetNecessaryData(searchCriterion);
 
-                List<string[]> excelUsers = users.Select(x => ConventerUser(x)).ToList();
+                ExcelMapper mapper = new ExcelMapper();
 
-                for (int i = 1; i < excelUsers.Count + 1; i++)
-                {
-                    for (int j = 1; j < 7; j++)
-                    {
-                        xlWorkSheet.Rows[i].Columns[j] = excelUsers[i - 1][j - 1];
-                    }
-                    await Task.Delay(20);
-                }
-
-                xlApp.AlertBeforeOverwriting = false;
-                xlWorkBook.SaveAs(FileName);
-                xlApp.Quit();
-
-                ReleaseObject(xlWorkSheet);
-                ReleaseObject(xlWorkBook);
-                ReleaseObject(xlApp);
+                mapper.Save(FileName, users, "Excel", true);
 
                 MessageBox.Show("Данные были успешно добавлены.", "Информация",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-        void ReleaseObject(object obj)
-        {
-            try
-            {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-                obj = null;
-            }
-            catch (Exception ex)
-            {
-                obj = null;
-                MessageBox.Show("Была обнаружена ошибка " + ex.ToString());
-            }
-            finally
-            {
-                GC.Collect();
-            }
-        }
         List<User> GetDateFromCsv()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            openFileDialog.InitialDirectory = @"C:\Users\User\Desktop";
-            openFileDialog.Filter = "CSV файлы (*.csv)|*.csv|Все файлы (*.*)|*.*";
-            openFileDialog.Title = "Импорт файла .csv";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                InitialDirectory = @"C:\Users\User\Desktop",
+                Filter = "CSV файлы (*.csv)|*.csv|Все файлы (*.*)|*.*",
+                Title = "Импорт файла .csv"
+            };
 
             List<User> date = new List<User>();
 
@@ -208,9 +176,10 @@ namespace StarterTest.WinF
 
                 using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
                 {
-                    XmlTextWriter xmlOut = new XmlTextWriter(fs, Encoding.Unicode);
-
-                    xmlOut.Formatting = Formatting.Indented;
+                    XmlTextWriter xmlOut = new XmlTextWriter(fs, Encoding.Unicode)
+                    {
+                        Formatting = Formatting.Indented
+                    };
 
                     xmlOut.WriteStartDocument();
                     xmlOut.WriteStartElement("TestProgram");
@@ -218,7 +187,7 @@ namespace StarterTest.WinF
                     foreach (User xUser in users)
                     {
                         SaveToFile(xmlOut, xUser);
-                        await Task.Delay(50);
+                        await Task.Delay(1);
                     }
 
                     xmlOut.WriteEndElement();
@@ -230,7 +199,7 @@ namespace StarterTest.WinF
                 }
             }
         }
-        static void SaveToFile(XmlTextWriter xmlOut, User xUser)
+        void SaveToFile(XmlTextWriter xmlOut, User xUser)
         {
             xmlOut.WriteStartElement("Record");
             xmlOut.WriteAttributeString("id", xUser.Id.ToString());
@@ -260,12 +229,6 @@ namespace StarterTest.WinF
             if (searchCriterion.Country != null)
                 users = users.Where(x => x.Country == searchCriterion.Country).ToList();
             return users;
-        }
-        string[] ConventerUser(User user)
-        {
-            string[] result = { user.DateTime.ToString("dd.MM.yy"), user.Name, user.Surname, user.MiddleName, 
-                user.City, user.Country };
-            return result;
         }
         void GetRusNameCols()
         {

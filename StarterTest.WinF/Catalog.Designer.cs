@@ -38,6 +38,7 @@
             this.изменитьЗаписьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.удалитьЗаписьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -51,12 +52,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView.Location = new System.Drawing.Point(12, 43);
+            this.dataGridView.Location = new System.Drawing.Point(12, 60);
             this.dataGridView.MultiSelect = false;
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.ReadOnly = true;
             this.dataGridView.ShowEditingIcon = false;
-            this.dataGridView.Size = new System.Drawing.Size(776, 395);
+            this.dataGridView.Size = new System.Drawing.Size(776, 378);
             this.dataGridView.TabIndex = 0;
             // 
             // menuStrip1
@@ -133,11 +134,19 @@
             this.отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem.Text = "Отобразить данные (может занять некоторое время)";
             this.отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem.Click += new System.EventHandler(this.отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem_Click);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(12, 31);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(776, 23);
+            this.progressBar1.TabIndex = 4;
+            // 
             // Catalog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.dataGridView);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -164,5 +173,6 @@
         private System.Windows.Forms.ToolStripMenuItem удалитьЗаписьToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem экспортToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
