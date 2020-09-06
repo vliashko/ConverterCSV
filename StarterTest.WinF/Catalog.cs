@@ -22,10 +22,14 @@ namespace StarterTest.WinF
         {
             InitializeComponent();
             set = db.Users;
+        }
+        void отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             LoadDbDate();
             GetRusNameCols();
+            работаСТаблицейToolStripMenuItem.Enabled = true;
+            отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem.Enabled = false;
         }
-
         void импортToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             List<User> users = GetDateFromCsv();
@@ -47,9 +51,10 @@ namespace StarterTest.WinF
         }
         void изменитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var index = dataGridView.CurrentCell.RowIndex + 1;
+            var index = dataGridView.SelectedCells[0].RowIndex;
+            int id = (int)dataGridView[0, index].Value;
 
-            if(set.Find(index) is User user)
+            if(set.Find(id) is User user)
             {
                 var form = new FormAddOrChangeUser(user);
 
@@ -63,12 +68,14 @@ namespace StarterTest.WinF
         }
         void удалитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var index = dataGridView.CurrentCell.RowIndex;
-
-            dataGridView.Rows.RemoveAt(index);
-
-            db.SaveChanges();
-            dataGridView.Refresh();
+            var index = dataGridView.SelectedCells[0].RowIndex;
+            if (MessageBox.Show("Вы точно хотите удалить эту запись?", "Удаление", 
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+            {
+                dataGridView.Rows.RemoveAt(index);
+                db.SaveChanges();
+                dataGridView.Refresh();
+            }
         }
         void экспортToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -79,7 +86,7 @@ namespace StarterTest.WinF
             else
                 ExportToXml(form.User);
         }
-        async void ExportToExcel(User user)
+        async void ExportToExcel(User searchCriterion)
         {
             string FileName;
 
@@ -96,7 +103,7 @@ namespace StarterTest.WinF
                 Excel.Workbook xlWorkBook = xlApp.Workbooks.Add();
                 Excel.Worksheet xlWorkSheet = xlWorkBook.ActiveSheet;
 
-                List<User> users = GetNecessaryData(user);
+                List<User> users = GetNecessaryData(searchCriterion);
 
                 List<string[]> excelUsers = users.Select(x => ConventerUser(x)).ToList();
 
@@ -105,8 +112,8 @@ namespace StarterTest.WinF
                     for (int j = 1; j < 7; j++)
                     {
                         xlWorkSheet.Rows[i].Columns[j] = excelUsers[i - 1][j - 1];
-                        await Task.Delay(50);
                     }
+                    await Task.Delay(20);
                 }
 
                 xlApp.AlertBeforeOverwriting = false;
@@ -120,7 +127,6 @@ namespace StarterTest.WinF
                 MessageBox.Show("Данные были успешно добавлены.", "Информация",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
         }
         void ReleaseObject(object obj)
         {
@@ -180,7 +186,7 @@ namespace StarterTest.WinF
             dataGridView.DataSource = set.Local.ToBindingList();
             dataGridView.Sort(dataGridView.Columns["Id"], ListSortDirection.Ascending);
         }
-        async void ExportToXml(User user)
+        async void ExportToXml(User searchCriterion)
         {
             string fileName;
 
@@ -193,7 +199,7 @@ namespace StarterTest.WinF
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 fileName = saveFileDialog.FileName;
-                List<User> users = GetNecessaryData(user);
+                List<User> users = GetNecessaryData(searchCriterion);
 
                 using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
                 {
@@ -212,16 +218,13 @@ namespace StarterTest.WinF
 
                     xmlOut.WriteEndElement();
                     xmlOut.WriteEndDocument();
-
                     xmlOut.Close();
-                    fs.Close();
 
                     MessageBox.Show("Данные были успешно добавлены.", "Информация",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
-
         static void SaveToFile(XmlTextWriter xmlOut, User xUser)
         {
             xmlOut.WriteStartElement("Record");
@@ -234,23 +237,23 @@ namespace StarterTest.WinF
             xmlOut.WriteElementString("Country", xUser.Country);
             xmlOut.WriteEndElement();
         }
-        List<User> GetNecessaryData(User user)
+        List<User> GetNecessaryData(User searchCriterion)
         {
             set.Load();
             List<User> users = set.ToList();
 
-            if (user.Name != null)
-                users = users.Where(x => x.Name == user.Name).ToList();
-            if (user.Surname != null)
-                users = users.Where(x => x.Surname == user.Surname).ToList();
-            if (user.MiddleName != null)
-                users = users.Where(x => x.MiddleName == user.MiddleName).ToList();
-            if (user.DateTime != DateTime.MinValue)
-                users = users.Where(x => x.DateTime == user.DateTime).ToList();
-            if (user.City != null)
-                users = users.Where(x => x.City == user.City).ToList();
-            if (user.Country != null)
-                users = users.Where(x => x.Country == user.Country).ToList();
+            if (searchCriterion.Name != null)
+                users = users.Where(x => x.Name == searchCriterion.Name).ToList();
+            if (searchCriterion.Surname != null)
+                users = users.Where(x => x.Surname == searchCriterion.Surname).ToList();
+            if (searchCriterion.MiddleName != null)
+                users = users.Where(x => x.MiddleName == searchCriterion.MiddleName).ToList();
+            if (searchCriterion.DateTime != DateTime.MinValue)
+                users = users.Where(x => x.DateTime == searchCriterion.DateTime).ToList();
+            if (searchCriterion.City != null)
+                users = users.Where(x => x.City == searchCriterion.City).ToList();
+            if (searchCriterion.Country != null)
+                users = users.Where(x => x.Country == searchCriterion.Country).ToList();
             return users;
         }
         string[] ConventerUser(User user)

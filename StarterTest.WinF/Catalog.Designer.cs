@@ -32,11 +32,12 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.импортToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.импортToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.экспортToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.работаСТаблицейToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.добавитьЗаписьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.изменитьЗаписьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.удалитьЗаписьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.экспортToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -59,7 +60,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.импортToolStripMenuItem,
-            this.работаСТаблицейToolStripMenuItem});
+            this.работаСТаблицейToolStripMenuItem,
+            this.отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(800, 24);
@@ -78,9 +80,16 @@
             // импортToolStripMenuItem1
             // 
             this.импортToolStripMenuItem1.Name = "импортToolStripMenuItem1";
-            this.импортToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.импортToolStripMenuItem1.Size = new System.Drawing.Size(149, 22);
             this.импортToolStripMenuItem1.Text = "Импорт (.csv)";
             this.импортToolStripMenuItem1.Click += new System.EventHandler(this.импортToolStripMenuItem1_Click);
+            // 
+            // экспортToolStripMenuItem
+            // 
+            this.экспортToolStripMenuItem.Name = "экспортToolStripMenuItem";
+            this.экспортToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.экспортToolStripMenuItem.Text = "Экспорт";
+            this.экспортToolStripMenuItem.Click += new System.EventHandler(this.экспортToolStripMenuItem_Click);
             // 
             // работаСТаблицейToolStripMenuItem
             // 
@@ -88,6 +97,7 @@
             this.добавитьЗаписьToolStripMenuItem,
             this.изменитьЗаписьToolStripMenuItem,
             this.удалитьЗаписьToolStripMenuItem});
+            this.работаСТаблицейToolStripMenuItem.Enabled = false;
             this.работаСТаблицейToolStripMenuItem.Name = "работаСТаблицейToolStripMenuItem";
             this.работаСТаблицейToolStripMenuItem.Size = new System.Drawing.Size(121, 20);
             this.работаСТаблицейToolStripMenuItem.Text = "Работа с таблицей";
@@ -95,30 +105,30 @@
             // добавитьЗаписьToolStripMenuItem
             // 
             this.добавитьЗаписьToolStripMenuItem.Name = "добавитьЗаписьToolStripMenuItem";
-            this.добавитьЗаписьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.добавитьЗаписьToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.добавитьЗаписьToolStripMenuItem.Text = "Добавить запись";
             this.добавитьЗаписьToolStripMenuItem.Click += new System.EventHandler(this.добавитьЗаписьToolStripMenuItem_Click);
             // 
             // изменитьЗаписьToolStripMenuItem
             // 
             this.изменитьЗаписьToolStripMenuItem.Name = "изменитьЗаписьToolStripMenuItem";
-            this.изменитьЗаписьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.изменитьЗаписьToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.изменитьЗаписьToolStripMenuItem.Text = "Изменить запись";
             this.изменитьЗаписьToolStripMenuItem.Click += new System.EventHandler(this.изменитьЗаписьToolStripMenuItem_Click);
             // 
             // удалитьЗаписьToolStripMenuItem
             // 
             this.удалитьЗаписьToolStripMenuItem.Name = "удалитьЗаписьToolStripMenuItem";
-            this.удалитьЗаписьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.удалитьЗаписьToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.удалитьЗаписьToolStripMenuItem.Text = "Удалить запись";
             this.удалитьЗаписьToolStripMenuItem.Click += new System.EventHandler(this.удалитьЗаписьToolStripMenuItem_Click);
             // 
-            // экспортToolStripMenuItem
+            // отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem
             // 
-            this.экспортToolStripMenuItem.Name = "экспортToolStripMenuItem";
-            this.экспортToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.экспортToolStripMenuItem.Text = "Экспорт";
-            this.экспортToolStripMenuItem.Click += new System.EventHandler(this.экспортToolStripMenuItem_Click);
+            this.отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem.Name = "отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem";
+            this.отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem.Size = new System.Drawing.Size(310, 20);
+            this.отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem.Text = "Отобразить данные (может занять некоторое время)";
+            this.отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem.Click += new System.EventHandler(this.отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem_Click);
             // 
             // Catalog
             // 
@@ -150,5 +160,6 @@
         private System.Windows.Forms.ToolStripMenuItem изменитьЗаписьToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem удалитьЗаписьToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem экспортToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem;
     }
 }

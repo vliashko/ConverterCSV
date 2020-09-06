@@ -25,6 +25,11 @@ namespace StarterTest.WinF
 
         void button1_Click(object sender, EventArgs e)
         {
+            SaveChanges();
+        }
+
+        private void SaveChanges()
+        {
             var u = User ?? new User();
 
             u.Name = textBox2.Text;
