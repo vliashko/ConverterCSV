@@ -7,6 +7,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -18,6 +19,7 @@ namespace StarterTest.WinF
     {
         readonly DBContext db = new DBContext();
         readonly DbSet<User> set;
+        Action LoadDb;
         public Catalog()
         {
             InitializeComponent();
@@ -25,10 +27,10 @@ namespace StarterTest.WinF
         }
         void отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LoadDbDate();
-            GetRusNameCols();
-            работаСТаблицейToolStripMenuItem.Enabled = true;
-            отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem.Enabled = false;
+            LoadDb += LoadDbDate;
+            LoadDb += GetRusNameCols;
+            Thread thread = new Thread(new ThreadStart(LoadDb));
+            thread.Start();
         }
         void импортToolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -185,6 +187,9 @@ namespace StarterTest.WinF
             set.Load();
             dataGridView.DataSource = set.Local.ToBindingList();
             dataGridView.Sort(dataGridView.Columns["Id"], ListSortDirection.Ascending);
+
+            работаСТаблицейToolStripMenuItem.Enabled = true;
+            отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem.Enabled = false;
         }
         async void ExportToXml(User searchCriterion)
         {
