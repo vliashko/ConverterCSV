@@ -6,8 +6,10 @@ using System.ComponentModel;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace StarterTest.WinF
@@ -83,7 +85,7 @@ namespace StarterTest.WinF
 
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "Excel файлы (*.xlsx)|*.xlsx|Все файлы (*.*)|*.*",
+                Filter = "Excel files (*.xlsx)|*.xlsx|Все файлы (*.*)|*.*",
                 Title = "Экспорт в Excel"
             };
 
@@ -180,43 +182,59 @@ namespace StarterTest.WinF
         }
         async void ExportToXml(User user)
         {
-            string FileName;
+            string fileName;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "Xml файлы (*.xml)|*.xml|Все файлы (*.*)|*.*",
-                Title = "Экспорт в Excel"
+                Filter = "XML files (*.xml)|*.xml|Все файлы (*.*)|*.*",
+                Title = "Экспорт в XML"
             };
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                FileName = saveFileDialog.FileName;
+                fileName = saveFileDialog.FileName;
                 List<User> users = GetNecessaryData(user);
 
-                File.AppendAllText(FileName, "<TestProgram>");
-
-                foreach (var xUser in users)
+                using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
                 {
-                    File.AppendAllText(FileName, $"\n\t<Record id=\"{xUser.Id}\">");
-                    File.AppendAllText(FileName, $"\n\t\t<Date>{xUser.DateTime:dd.MM.yy}</Date>");
-                    File.AppendAllText(FileName, $"\n\t\t<FirstName>{xUser.Name}</FirstName>");
-                    File.AppendAllText(FileName, $"\n\t\t<LastName>{xUser.Surname}</LastName>");
-                    File.AppendAllText(FileName, $"\n\t\t<SurName>{xUser.MiddleName}</SurName>");
-                    File.AppendAllText(FileName, $"\n\t\t<City>{xUser.City}</City>");
-                    File.AppendAllText(FileName, $"\n\t\t<Country>{xUser.Country}</Country>");
-                    File.AppendAllText(FileName, $"\n\t</Record>");
-                    await Task.Delay(50);
+                    XmlTextWriter xmlOut = new XmlTextWriter(fs, Encoding.Unicode);
+
+                    xmlOut.Formatting = Formatting.Indented;
+
+                    xmlOut.WriteStartDocument();
+                    xmlOut.WriteStartElement("TestProgram");
+
+                    foreach (User xUser in users)
+                    {
+                        SaveToFile(xmlOut, xUser);
+                        await Task.Delay(50);
+                    }
+
+                    xmlOut.WriteEndElement();
+                    xmlOut.WriteEndDocument();
+
+                    xmlOut.Close();
+                    fs.Close();
+
+                    MessageBox.Show("Данные были успешно добавлены.", "Информация",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-
-                File.AppendAllText(FileName, "\n</TestProgram>");
-
-                MessageBox.Show("Данные были успешно добавлены.", "Информация",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-
             }
         }
 
-        private List<User> GetNecessaryData(User user)
+        static void SaveToFile(XmlTextWriter xmlOut, User xUser)
+        {
+            xmlOut.WriteStartElement("Record");
+            xmlOut.WriteAttributeString("id", xUser.Id.ToString());
+            xmlOut.WriteElementString("Date", xUser.DateTime.ToString("dd.MM.yy"));
+            xmlOut.WriteElementString("FirstName", xUser.Name);
+            xmlOut.WriteElementString("LastName", xUser.Surname);
+            xmlOut.WriteElementString("SurName", xUser.MiddleName);
+            xmlOut.WriteElementString("City", xUser.City);
+            xmlOut.WriteElementString("Country", xUser.Country);
+            xmlOut.WriteEndElement();
+        }
+        List<User> GetNecessaryData(User user)
         {
             set.Load();
             List<User> users = set.ToList();
