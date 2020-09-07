@@ -14,15 +14,16 @@ namespace StarterTest.BL.Model
 
 
         public User() { }
-        public User(string dateTime, string name, string surname, string middleName, string city, string country)
+        public User(string line)
         {
+            var data = line.Split(';');
             // TODO: Проверка данных
-            DateTime = DateTime.Parse(dateTime);
-            Name = name;
-            Surname = surname;
-            MiddleName = middleName;
-            City = city;
-            Country = country;
+            DateTime = DateTime.Parse(data[0]);
+            Name = data[1];
+            Surname = data[2];
+            MiddleName = data[3];
+            City = data[4];
+            Country = data[5];
         }
     }
 }

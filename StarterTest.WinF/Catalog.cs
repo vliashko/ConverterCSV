@@ -1,4 +1,5 @@
-﻿using Ganss.Excel;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Ganss.Excel;
 using StarterTest.BL;
 using StarterTest.BL.Model;
 using System;
@@ -36,9 +37,9 @@ namespace StarterTest.WinF
         }
         void импортToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            List<User> users = GetDateFromCsv();
-            LoadDateToDatabase(users);
-            LoadDbDate();
+            GetDateFromCsv();
+            MessageBox.Show("Данные были успешно добавлены.", "Информация",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         void добавитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -58,11 +59,11 @@ namespace StarterTest.WinF
             var index = dataGridView.SelectedCells[0].RowIndex;
             int id = (int)dataGridView[0, index].Value;
 
-            if(set.Find(id) is User user)
+            if (set.Find(id) is User user)
             {
                 var form = new FormAddOrChangeUser(user);
 
-                if(form.ShowDialog() == DialogResult.OK)
+                if (form.ShowDialog() == DialogResult.OK)
                 {
                     _ = form.User;
                     db.SaveChanges();
@@ -73,7 +74,7 @@ namespace StarterTest.WinF
         void удалитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var index = dataGridView.SelectedCells[0].RowIndex;
-            if (MessageBox.Show("Вы точно хотите удалить эту запись?", "Удаление", 
+            if (MessageBox.Show("Вы точно хотите удалить эту запись?", "Удаление",
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
             {
                 dataGridView.Rows.RemoveAt(index);
@@ -114,7 +115,7 @@ namespace StarterTest.WinF
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-        List<User> GetDateFromCsv()
+        void GetDateFromCsv()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -123,32 +124,28 @@ namespace StarterTest.WinF
                 Title = "Импорт файла .csv"
             };
 
-            List<User> date = new List<User>();
+            List<User> data = new List<User>();
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string fileName = openFileDialog.FileName;
-                using (StreamReader sr = new StreamReader(fileName))
+                using (var reader = new StreamReader(fileName))
                 {
-                    while (!sr.EndOfStream)
+                    string line;
+                    int counter = 0;
+                    while ((line = reader.ReadLine()) != null)
                     {
-                        string[] line = sr.ReadLine().Split(';');
-                        var user = new User(line[0], line[1], line[2], line[3], line[4], line[5]);
-                        date.Add(user);
+                        counter++;
+                        data.Add(new User(line));
+                        if (counter % 500 == 0)
+                        {
+                            ProcessLines(data);
+                            data.Clear();
+                        }
                     }
+                    //data = File.ReadAllLines(fileName).Select(line => new User(line)).ToList();
                 }
             }
-            return date;
-        }
-        void LoadDateToDatabase(List<User> users)
-        {
-            foreach (User user in users)
-            {
-                db.Set<User>().Add(user);
-            }
-            db.SaveChanges();
-            MessageBox.Show("Записи были добавлены в базу данных.\nОшибок не обнаружено.",
-                "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         void LoadDbDate()
         {
@@ -239,6 +236,11 @@ namespace StarterTest.WinF
             dataGridView.Columns[4].HeaderText = "Отчество";
             dataGridView.Columns[5].HeaderText = "Город";
             dataGridView.Columns[6].HeaderText = "Страна";
+        }
+        void ProcessLines(List<User> data)
+        {
+            db.Set<User>().AddRange(data);
+            db.SaveChanges();
         }
     }
 }
