@@ -137,12 +137,14 @@ namespace StarterTest.WinF
                     {
                         counter++;
                         data.Add(new User(line));
-                        if (counter % 500 == 0)
+                        if (counter % 18000 == 0)
                         {
                             ProcessLines(data);
                             data.Clear();
                         }
                     }
+                    ProcessLines(data);
+                    data.Clear();
                     //data = File.ReadAllLines(fileName).Select(line => new User(line)).ToList();
                 }
             }
@@ -156,7 +158,7 @@ namespace StarterTest.WinF
             работаСТаблицейToolStripMenuItem.Enabled = true;
             отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem.Enabled = false;
         }
-        async void ExportToXml(User searchCriterion)
+        void ExportToXml(User searchCriterion)
         {
             string fileName;
 
@@ -184,7 +186,6 @@ namespace StarterTest.WinF
                     foreach (User xUser in users)
                     {
                         SaveToFile(xmlOut, xUser);
-                        await Task.Delay(1);
                     }
 
                     xmlOut.WriteEndElement();
@@ -200,7 +201,7 @@ namespace StarterTest.WinF
         {
             xmlOut.WriteStartElement("Record");
             xmlOut.WriteAttributeString("id", xUser.Id.ToString());
-            xmlOut.WriteElementString("Date", xUser.DateTime.ToString("dd.MM.yy"));
+            xmlOut.WriteElementString("Date", xUser.DateTime.ToString("dd.MM.yyyy"));
             xmlOut.WriteElementString("FirstName", xUser.Name);
             xmlOut.WriteElementString("LastName", xUser.Surname);
             xmlOut.WriteElementString("SurName", xUser.MiddleName);
