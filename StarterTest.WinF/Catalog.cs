@@ -1,4 +1,7 @@
-﻿using Ganss.Excel;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Ganss.Excel;
 using StarterTest.BL;
 using StarterTest.BL.Model;
 using System;
@@ -6,13 +9,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Entity;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
-
+using Z.EntityFramework.Extensions;
 
 namespace StarterTest.WinF
 {
@@ -24,6 +28,7 @@ namespace StarterTest.WinF
         {
             InitializeComponent();
             set = db.Users;
+            EntityFrameworkManager.DefaultEntityFrameworkPropagationValue = false;
         }
         void отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -35,8 +40,6 @@ namespace StarterTest.WinF
         void импортToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             GetDateFromCsv();
-            MessageBox.Show("Данные были успешно добавлены.", "Информация",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         void добавитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -47,7 +50,7 @@ namespace StarterTest.WinF
                 var user = form.User;
                 user.Id = dataGridView.Rows.Count;
                 db.Users.Add(user);
-                db.SaveChanges();
+                db.BulkSaveChanges();
                 dataGridView.Refresh();
             }
         }
@@ -63,7 +66,7 @@ namespace StarterTest.WinF
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     _ = form.User;
-                    db.SaveChanges();
+                    db.BulkSaveChanges();
                     dataGridView.Refresh();
                 }
             }
@@ -75,7 +78,7 @@ namespace StarterTest.WinF
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
             {
                 dataGridView.Rows.RemoveAt(index);
-                db.SaveChanges();
+                db.BulkSaveChanges();
                 dataGridView.Refresh();
             }
         }
@@ -133,23 +136,32 @@ namespace StarterTest.WinF
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string fileName = openFileDialog.FileName;
-                using (var reader = new StreamReader(fileName))
+
+                using(StreamReader sr = new StreamReader(fileName))
                 {
-                    string line;
-                    int counter = 0;
-                    while ((line = reader.ReadLine()) != null)
+                    var csv = new CsvReader(sr, CultureInfo.CurrentCulture);
+                    csv.Configuration.HasHeaderRecord = false;
+                    csv.Configuration.RegisterClassMap<UserMap>();
+                    csv.Configuration.Delimiter = ";";
+
+                    var users = csv.GetRecords<User>().ToList();
+                    var list = new List<User>();
+
+                    while (users.Count >= 20000)
                     {
-                        counter++;
-                        data.Add(new User(line));
-                        if (counter % 18000 == 0)
-                        {
-                            ProcessLines(data);
-                            data.Clear();
-                        }
+                        list = users.GetRange(0, 20000);
+                        users.RemoveRange(0, 20000);
+                        db.Set<User>().AddRange(list);
+                        list.Clear();
                     }
-                    ProcessLines(data);
-                    data.Clear();
-                    //data = File.ReadAllLines(fileName).Select(line => new User(line)).ToList();
+
+                    list = users;
+                    db.Set<User>().AddRange(list);
+
+                    db.BulkSaveChanges();
+
+                    MessageBox.Show("Данные были успешно добавлены.", "Информация",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -237,10 +249,18 @@ namespace StarterTest.WinF
             dataGridView.Columns[5].HeaderText = "Город";
             dataGridView.Columns[6].HeaderText = "Страна";
         }
-        void ProcessLines(List<User> data)
+    }
+
+    public class UserMap : ClassMap<User>
+    {
+        public UserMap()
         {
-            db.Set<User>().AddRange(data);
-            db.SaveChanges();
+            Map(m => m.DateTime).Index(0).TypeConverterOption.Format("dd.mm.yyyy");
+            Map(m => m.Name);
+            Map(m => m.Surname);
+            Map(m => m.MiddleName);
+            Map(m => m.City);
+            Map(m => m.Country);
         }
     }
 }
