@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Ganss.Excel;
+﻿using Ganss.Excel;
 using StarterTest.BL;
 using StarterTest.BL.Model;
 using System;
@@ -11,10 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using Excel = Microsoft.Office.Interop.Excel;
 
 
 namespace StarterTest.WinF
@@ -40,6 +37,7 @@ namespace StarterTest.WinF
             GetDateFromCsv();
             MessageBox.Show("Данные были успешно добавлены.", "Информация",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
+            GC.Collect();
         }
         void добавитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -86,10 +84,11 @@ namespace StarterTest.WinF
         {
             var form = new ChooseDateToExport();
             form.ShowDialog();
-            if (form.IsExcel)
+            if (form.ChooseExportStyle == 1)
                 ExportToExcel(form.User);
-            else
+            else if (form.ChooseExportStyle == 2)
                 ExportToXml(form.User);
+            
         }
         void ExportToExcel(User searchCriterion)
         {
@@ -106,7 +105,13 @@ namespace StarterTest.WinF
                 FileName = saveFileDialog.FileName;
 
                 List<User> users = GetNecessaryData(searchCriterion);
-
+                if(users.Count > 1048576)
+                {
+                    MessageBox.Show("Данные не могут быть экспортированы в Excel.\nExcel не поддерживает такой большой объем данных.", 
+                        "Информация",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
                 ExcelMapper mapper = new ExcelMapper();
 
                 mapper.Save(FileName, users, "Excel", true);
@@ -175,25 +180,26 @@ namespace StarterTest.WinF
 
                 using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
                 {
-                    XmlTextWriter xmlOut = new XmlTextWriter(fs, Encoding.Unicode)
+                    using (XmlTextWriter xmlOut = new XmlTextWriter(fs, Encoding.Unicode))
                     {
-                        Formatting = Formatting.Indented
-                    };
+                        xmlOut.Formatting = Formatting.Indented;
 
-                    xmlOut.WriteStartDocument();
-                    xmlOut.WriteStartElement("TestProgram");
+                        xmlOut.WriteStartDocument();
+                        xmlOut.WriteStartElement("TestProgram");
 
-                    foreach (User xUser in users)
-                    {
-                        SaveToFile(xmlOut, xUser);
+                        foreach (User xUser in users)
+                        {
+                            SaveToFile(xmlOut, xUser);
+                        }
+
+                        xmlOut.WriteEndElement();
+                        xmlOut.WriteEndDocument();
+
+                        MessageBox.Show("Данные были успешно добавлены.", "Информация",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        users.Clear();
                     }
-
-                    xmlOut.WriteEndElement();
-                    xmlOut.WriteEndDocument();
-                    xmlOut.Close();
-
-                    MessageBox.Show("Данные были успешно добавлены.", "Информация",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -211,8 +217,7 @@ namespace StarterTest.WinF
         }
         List<User> GetNecessaryData(User searchCriterion)
         {
-            set.Load();
-            List<User> users = set.ToList();
+            List<User> users = db.Users.ToList();
 
             if (searchCriterion.Name != null)
                 users = users.Where(x => x.Name == searchCriterion.Name).ToList();

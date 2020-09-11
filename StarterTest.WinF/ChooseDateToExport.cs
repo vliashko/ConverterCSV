@@ -6,7 +6,7 @@ namespace StarterTest.WinF
 {
     public partial class ChooseDateToExport : Form
     {
-        public bool IsExcel { get; set; }
+        public int ChooseExportStyle { get; set; }
         public User User { get; set; }
         public ChooseDateToExport()
         {
@@ -16,13 +16,13 @@ namespace StarterTest.WinF
         void button1_Click(object sender, EventArgs e)
         {
             ButtonClick();
-            IsExcel = true;
+            ChooseExportStyle = 1;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             ButtonClick();
-            IsExcel = false;
+            ChooseExportStyle = 2;
         }
 
 
@@ -43,6 +43,8 @@ namespace StarterTest.WinF
                 u.MiddleName = null;
             if (String.IsNullOrEmpty(maskedTextBox1.Text) || String.IsNullOrWhiteSpace(maskedTextBox1.Text))
                 u.DateTime = DateTime.Parse(maskedTextBox1.Text);
+            else
+                u.DateTime = DateTime.MinValue;
             if (textBox3.Text != "")
                 u.City = textBox3.Text;
             else

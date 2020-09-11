@@ -24,6 +24,5 @@ namespace StarterTest.BL.Model
             MiddleName = data[3];
             City = data[4];
             Country = data[5];
-        }
-    }
+        } }
 }
