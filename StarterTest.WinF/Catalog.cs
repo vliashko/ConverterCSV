@@ -37,7 +37,6 @@ namespace StarterTest.WinF
             GetDateFromCsv();
             MessageBox.Show("Данные были успешно добавлены.", "Информация",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
-            GC.Collect();
         }
         void добавитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -217,20 +216,15 @@ namespace StarterTest.WinF
         }
         List<User> GetNecessaryData(User searchCriterion)
         {
-            List<User> users = db.Users.ToList();
+            List<User> users = new List<User>();
 
-            if (searchCriterion.Name != null)
-                users = users.Where(x => x.Name == searchCriterion.Name).ToList();
-            if (searchCriterion.Surname != null)
-                users = users.Where(x => x.Surname == searchCriterion.Surname).ToList();
-            if (searchCriterion.MiddleName != null)
-                users = users.Where(x => x.MiddleName == searchCriterion.MiddleName).ToList();
-            if (searchCriterion.DateTime != DateTime.MinValue)
-                users = users.Where(x => x.DateTime == searchCriterion.DateTime).ToList();
-            if (searchCriterion.City != null)
-                users = users.Where(x => x.City == searchCriterion.City).ToList();
-            if (searchCriterion.Country != null)
-                users = users.Where(x => x.Country == searchCriterion.Country).ToList();
+            users = db.Users.Where(x => searchCriterion.Name != null ? x.Name == searchCriterion.Name : true)
+                            .Where(x => searchCriterion.Surname != null ? x.Surname == searchCriterion.Surname : true)
+                            .Where(x => searchCriterion.MiddleName != null ? x.MiddleName == searchCriterion.MiddleName : true)
+                            .Where(x => searchCriterion.DateTime != DateTime.MinValue ? x.DateTime == searchCriterion.DateTime : true)
+                            .Where(x => searchCriterion.City != null ? x.City == searchCriterion.City : true)
+                            .Where(x => searchCriterion.Country != null ? x.Country == searchCriterion.Country : true)
+                            .ToList();
             return users;
         }
         void GetRusNameCols()
