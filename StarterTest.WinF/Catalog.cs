@@ -145,18 +145,8 @@ namespace StarterTest.WinF
                     csv.Configuration.Delimiter = ";";
 
                     var users = csv.GetRecords<User>().ToList();
-                    var list = new List<User>();
 
-                    while (users.Count >= 20000)
-                    {
-                        list = users.GetRange(0, 20000);
-                        users.RemoveRange(0, 20000);
-                        db.Set<User>().AddRange(list);
-                        list.Clear();
-                    }
-
-                    list = users;
-                    db.Set<User>().AddRange(list);
+                    db.BulkInsert(users);
 
                     db.BulkSaveChanges();
 
