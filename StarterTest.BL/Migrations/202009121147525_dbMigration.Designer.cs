@@ -7,13 +7,13 @@ namespace StarterTest.BL.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class userMigration : IMigrationMetadata
+    public sealed partial class dbMigration : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(userMigration));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(dbMigration));
         
         string IMigrationMetadata.Id
         {
-            get { return "202009041338489_userMigration"; }
+            get { return "202009121147525_dbMigration"; }
         }
         
         string IMigrationMetadata.Source

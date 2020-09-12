@@ -52,9 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DBContext.cs" />
-    <Compile Include="Migrations\202009041338489_userMigration.cs" />
-    <Compile Include="Migrations\202009041338489_userMigration.designer.cs">
-      <DependentUpon>202009041338489_userMigration.cs</DependentUpon>
+    <Compile Include="Migrations\202009121147525_dbMigration.cs" />
+    <Compile Include="Migrations\202009121147525_dbMigration.designer.cs">
+      <DependentUpon>202009121147525_dbMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\User.cs" />
@@ -65,8 +65,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202009041338489_userMigration.resx">
-      <DependentUpon>202009041338489_userMigration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202009121147525_dbMigration.resx">
+      <DependentUpon>202009121147525_dbMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

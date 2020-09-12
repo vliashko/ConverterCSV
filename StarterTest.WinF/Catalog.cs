@@ -1,5 +1,4 @@
 ﻿using CsvHelper;
-using CsvHelper.Configuration;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Ganss.Excel;
 using StarterTest.BL;
@@ -32,10 +31,28 @@ namespace StarterTest.WinF
         }
         void отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Action LoadDb = new Action(LoadDbDate);
-            LoadDb += GetRusNameCols;
-            Thread thread = new Thread(new ThreadStart(LoadDb));
-            thread.Start();
+            ShowData f = new ShowData();
+            if(f.ShowDialog() == DialogResult.OK)
+            {
+                List<User> users = GetNecessaryData(f.User);
+                if(MessageBox.Show($"Данных по вашему запросу найдено: {users.Count}.\nХотите экспортировать эти данные?", "Информация",
+                     MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    var ff = new ChooseDateToExport();
+
+                    ff.textBox2.Text = f.User.Name;
+                    ff.textBox5.Text = f.User.Surname;
+                    ff.textBox4.Text = f.User.MiddleName;
+                    if (f.User.DateTime != DateTime.MinValue)
+                        ff.maskedTextBox1.Text = f.User.DateTime.ToString();
+                    ff.textBox3.Text = f.User.City;
+                    ff.textBox6.Text = f.User.Country;
+
+                    ExportMethod(ff);
+                }
+                LoadDbDate(users);
+                GetRusNameCols();
+            }     
         }
         void импортToolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -85,11 +102,7 @@ namespace StarterTest.WinF
         void экспортToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var form = new ChooseDateToExport();
-            form.ShowDialog();
-            if (form.ChooseExportStyle == 1)
-                ExportToExcel(form.User);
-            else if (form.ChooseExportStyle == 2)
-                ExportToXml(form.User);
+            ExportMethod(form);
             
         }
         void ExportToExcel(User searchCriterion)
@@ -131,8 +144,6 @@ namespace StarterTest.WinF
                 Title = "Импорт файла .csv"
             };
 
-            List<User> data = new List<User>();
-
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string fileName = openFileDialog.FileName;
@@ -149,20 +160,19 @@ namespace StarterTest.WinF
                     db.BulkInsert(users);
 
                     db.BulkSaveChanges();
-
+                    
                     MessageBox.Show("Данные были успешно добавлены.", "Информация",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
-        void LoadDbDate()
+        void LoadDbDate(List<User> users)
         {
-            set.Load();
+            set.AddRange(users);
             dataGridView.DataSource = set.Local.ToBindingList();
             dataGridView.Sort(dataGridView.Columns["Id"], ListSortDirection.Ascending);
 
             работаСТаблицейToolStripMenuItem.Enabled = true;
-            отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem.Enabled = false;
         }
         void ExportToXml(User searchCriterion)
         {
@@ -239,18 +249,13 @@ namespace StarterTest.WinF
             dataGridView.Columns[5].HeaderText = "Город";
             dataGridView.Columns[6].HeaderText = "Страна";
         }
-    }
-
-    public class UserMap : ClassMap<User>
-    {
-        public UserMap()
+        void ExportMethod(ChooseDateToExport form)
         {
-            Map(m => m.DateTime).Index(0).TypeConverterOption.Format("dd.mm.yyyy");
-            Map(m => m.Name);
-            Map(m => m.Surname);
-            Map(m => m.MiddleName);
-            Map(m => m.City);
-            Map(m => m.Country);
+            form.ShowDialog();
+            if (form.ChooseExportStyle == 1)
+                ExportToExcel(form.User);
+            else if (form.ChooseExportStyle == 2)
+                ExportToXml(form.User);
         }
     }
 }

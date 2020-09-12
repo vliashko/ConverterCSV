@@ -4,29 +4,15 @@ using System.Windows.Forms;
 
 namespace StarterTest.WinF
 {
-    public partial class ChooseDateToExport : Form
+    public partial class ShowData : Form
     {
-        public int ChooseExportStyle { get; set; }
         public User User { get; set; }
-        public ChooseDateToExport()
+        public ShowData()
         {
             InitializeComponent();
         }
 
-        void button1_Click(object sender, EventArgs e)
-        {
-            ButtonClick();
-            ChooseExportStyle = 1;
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            ButtonClick();
-            ChooseExportStyle = 2;
-        }
-
-
-        void ButtonClick()
+        private void button1_Click(object sender, EventArgs e)
         {
             var u = new User();
             if (textBox2.Text != "")
@@ -41,7 +27,7 @@ namespace StarterTest.WinF
                 u.MiddleName = textBox4.Text;
             else
                 u.MiddleName = null;
-            if ((String.IsNullOrEmpty(maskedTextBox1.Text) || String.IsNullOrWhiteSpace(maskedTextBox1.Text)) 
+            if ((String.IsNullOrEmpty(maskedTextBox1.Text) || String.IsNullOrWhiteSpace(maskedTextBox1.Text))
                     && maskedTextBox1.Text.Length == 8)
                 u.DateTime = DateTime.Parse(maskedTextBox1.Text);
             else
@@ -55,27 +41,8 @@ namespace StarterTest.WinF
             else
                 u.Country = null;
 
-
             User = u;
             Close();
-        }
-        void textBoxLetter_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            char l = e.KeyChar;
-            if ((l < 'А' || l > 'я') && l != '\b')
-            {
-                e.Handled = true;
-            }
-        }
-
-        void maskedTextBox1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            char number = e.KeyChar;
-
-            if (!Char.IsDigit(number))
-            {
-                e.Handled = true;
-            }
         }
     }
 }
