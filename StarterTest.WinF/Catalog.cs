@@ -1,5 +1,4 @@
 ﻿using CsvHelper;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Ganss.Excel;
 using StarterTest.BL;
 using StarterTest.BL.Model;
@@ -13,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Z.EntityFramework.Extensions;
@@ -29,12 +29,13 @@ namespace StarterTest.WinF
             set = db.Users;
             EntityFrameworkManager.DefaultEntityFrameworkPropagationValue = false;
         }
-        void отобразитьДанныеможетЗанятьНекотороеВремяToolStripMenuItem_Click(object sender, EventArgs e)
+        async void ShowDataMenuItem_Click(object sender, EventArgs e)
         {
             ShowData f = new ShowData();
             if(f.ShowDialog() == DialogResult.OK)
             {
-                List<User> users = GetNecessaryData(f.User);
+                Loader(true);
+                List<User> users = await Task.Run(() => GetNecessaryData(f.User));
                 if(MessageBox.Show($"Данных по вашему запросу найдено: {users.Count}.\nХотите экспортировать эти данные?", "Информация",
                      MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
@@ -52,26 +53,38 @@ namespace StarterTest.WinF
                 }
                 LoadDbDate(users);
                 GetRusNameCols();
+                Loader(false);
             }     
         }
-        void импортToolStripMenuItem1_Click(object sender, EventArgs e)
+        void ImportMenuItem_Click(object sender, EventArgs e)
         {
             GetDateFromCsv();
         }
-        void добавитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
+        void AddMenuItem_Click(object sender, EventArgs e)
         {
             var form = new FormAddOrChangeUser();
 
             if (form.ShowDialog() == DialogResult.OK)
             {
                 var user = form.User;
-                user.Id = dataGridView.Rows.Count;
-                db.Users.Add(user);
-                db.BulkSaveChanges();
-                dataGridView.Refresh();
+                user.Id = db.Users.Count();
+
+                try
+                {
+                    db.Users.Add(user);
+                    db.BulkSaveChanges();
+                    dataGridView.Refresh();
+                }
+                catch
+                {
+                    db.Users.Remove(user);
+                    MessageBox.Show("Вводимая дата должна быть в диапозоне:\n1/1/1753 - 12/31/9999", "Ошибка", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
         }
-        void изменитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
+        void ChangeMenuItem_Click(object sender, EventArgs e)
         {
             var index = dataGridView.SelectedCells[0].RowIndex;
             int id = (int)dataGridView[0, index].Value;
@@ -82,13 +95,23 @@ namespace StarterTest.WinF
 
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    _ = form.User;
-                    db.BulkSaveChanges();
-                    dataGridView.Refresh();
+                    try
+                    {
+                        _ = form.User;
+                        db.BulkSaveChanges();
+                        dataGridView.Refresh();
+                    }
+                    catch
+                    {
+                        _ = user;
+                        MessageBox.Show("Вводимая дата должна быть в диапозоне:\n1/1/1753 - 12/31/9999", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
             }
         }
-        void удалитьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
+        void DeleteMenuItem_Click(object sender, EventArgs e)
         {
             var index = dataGridView.SelectedCells[0].RowIndex;
             if (MessageBox.Show("Вы точно хотите удалить эту запись?", "Удаление",
@@ -99,13 +122,13 @@ namespace StarterTest.WinF
                 dataGridView.Refresh();
             }
         }
-        void экспортToolStripMenuItem_Click(object sender, EventArgs e)
+        void ExportMenuItem_Click(object sender, EventArgs e)
         {
             var form = new ChooseDateToExport();
             ExportMethod(form);
             
         }
-        void ExportToExcel(User searchCriterion)
+        async void ExportToExcel(User searchCriterion)
         {
             string FileName;
 
@@ -117,35 +140,43 @@ namespace StarterTest.WinF
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
+                Loader(true);
                 FileName = saveFileDialog.FileName;
 
-                List<User> users = GetNecessaryData(searchCriterion);
-                if(users.Count > 1048576)
+                List<User> users = await Task.Run(() => GetNecessaryData(searchCriterion));
+                if (users.Count > 1048576)
                 {
-                    MessageBox.Show("Данные не могут быть экспортированы в Excel.\nExcel не поддерживает такой большой объем данных.", 
+                    MessageBox.Show("Данные не могут быть экспортированы в Excel.\nExcel не поддерживает такой большой объем данных.",
                         "Информация",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 ExcelMapper mapper = new ExcelMapper();
-
-                mapper.Save(FileName, users, "Excel", true);
+                await Task.Run(() => CreareSaverForExcelExportAsync(FileName, users, mapper));
 
                 MessageBox.Show("Данные были успешно добавлены.", "Информация",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Loader(false);
             }
         }
-        void GetDateFromCsv()
+
+        void CreareSaverForExcelExportAsync(string FileName, List<User> users, ExcelMapper mapper)
+        {
+            mapper.Save(FileName, users, "Excel", true);
+        }
+
+        async void GetDateFromCsv()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 InitialDirectory = @"C:\Users\User\Desktop",
-                Filter = "CSV файлы (*.csv)|*.csv|Все файлы (*.*)|*.*",
+                Filter = "CSV файлы (*.csv)|*.csv",
                 Title = "Импорт файла .csv"
             };
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                Loader(true);
                 string fileName = openFileDialog.FileName;
 
                 using(StreamReader sr = new StreamReader(fileName))
@@ -155,17 +186,23 @@ namespace StarterTest.WinF
                     csv.Configuration.RegisterClassMap<UserMap>();
                     csv.Configuration.Delimiter = ";";
 
-                    var users = csv.GetRecords<User>().ToList();
+                    await Task.Run(() => GetDataFromCsvAsync(csv));
 
-                    db.BulkInsert(users);
-
-                    db.BulkSaveChanges();
-                    
                     MessageBox.Show("Данные были успешно добавлены.", "Информация",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Loader(false);
                 }
             }
         }
+
+        void GetDataFromCsvAsync(CsvReader csv)
+        {
+            List<User> users =  csv.GetRecords<User>().ToList();
+
+            db.BulkInsert(users);
+            db.BulkSaveChanges();
+        }
+
         void LoadDbDate(List<User> users)
         {
             set.AddRange(users);
@@ -174,7 +211,7 @@ namespace StarterTest.WinF
 
             работаСТаблицейToolStripMenuItem.Enabled = true;
         }
-        void ExportToXml(User searchCriterion)
+        async void ExportToXml(User searchCriterion)
         {
             string fileName;
 
@@ -187,7 +224,8 @@ namespace StarterTest.WinF
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 fileName = saveFileDialog.FileName;
-                List<User> users = GetNecessaryData(searchCriterion);
+                Loader(true);
+                List<User> users = await Task.Run(() => GetNecessaryData(searchCriterion));
 
                 using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
                 {
@@ -198,22 +236,28 @@ namespace StarterTest.WinF
                         xmlOut.WriteStartDocument();
                         xmlOut.WriteStartElement("TestProgram");
 
-                        foreach (User xUser in users)
-                        {
-                            SaveToFile(xmlOut, xUser);
-                        }
+                        await Task.Run(() => ForeachExportXmlAsync(users, xmlOut));
 
                         xmlOut.WriteEndElement();
                         xmlOut.WriteEndDocument();
 
                         MessageBox.Show("Данные были успешно добавлены.", "Информация",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                        Loader(false);
                         users.Clear();
                     }
                 }
             }
         }
+
+        void ForeachExportXmlAsync(List<User> users, XmlTextWriter xmlOut)
+        {
+            foreach (User xUser in users)
+            {
+                SaveToFile(xmlOut, xUser);
+            }
+        }
+
         void SaveToFile(XmlTextWriter xmlOut, User xUser)
         {
             xmlOut.WriteStartElement("Record");
@@ -252,10 +296,23 @@ namespace StarterTest.WinF
         void ExportMethod(ChooseDateToExport form)
         {
             form.ShowDialog();
-            if (form.ChooseExportStyle == 1)
-                ExportToExcel(form.User);
-            else if (form.ChooseExportStyle == 2)
-                ExportToXml(form.User);
+                if (form.ChooseExportStyle == 1)
+                    ExportToExcel(form.User);
+                else if (form.ChooseExportStyle == 2)
+                    ExportToXml(form.User);
+        }
+
+        void Loader(bool state)
+        {
+            if(state)
+            {
+                string path = Path.GetFullPath("../../Resources/loader.gif");
+                pictureBox1.ImageLocation = path;
+            }
+            else
+            {
+                pictureBox1.Visible = false;
+            }
         }
     }
 }
