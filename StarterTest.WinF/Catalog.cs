@@ -185,8 +185,16 @@ namespace StarterTest.WinF
                     csv.Configuration.HasHeaderRecord = false;
                     csv.Configuration.RegisterClassMap<UserMap>();
                     csv.Configuration.Delimiter = ";";
-
-                    await Task.Run(() => GetDataFromCsvAsync(csv));
+                    try
+                    {
+                        await Task.Run(() => GetDataFromCsvAsync(csv));
+                    }
+                    catch (ReaderException)
+                    {
+                        MessageBox.Show("Файлы должны быть формата .csv", "Ошибка", 
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
 
                     MessageBox.Show("Данные были успешно добавлены.", "Информация",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
