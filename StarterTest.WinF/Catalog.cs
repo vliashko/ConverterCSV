@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using StarterTest.BL;
+﻿using StarterTest.BL;
 using StarterTest.BL.Model;
 using System;
 using System.Collections.Generic;
@@ -125,8 +124,7 @@ namespace StarterTest.WinF
                         rp.Create(user);
                         rp.Save();
 
-                        MessageBox.Show("Запись была добавлена.", "Информация",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        EndProcess("Данные были успешно добавлены.", false);
                     }
                     catch
                     {
@@ -159,8 +157,6 @@ namespace StarterTest.WinF
                     return;
                 }
             }
-
-
         }
         void DeleteMenuItem_Click(object sender, EventArgs e)
         {
@@ -210,14 +206,10 @@ namespace StarterTest.WinF
 
                     if (exportExcel.Result == false)
                     {
-                        MessageBox.Show("Данные не могут быть экспортированы в Excel.\nExcel не поддерживает такой большой объем данных.",
-                                            "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        Loader(false);
+                        EndProcess("Данные не могут быть экспортированы в Excel.\nExcel не поддерживает такой большой объем данных.", true);
                         return;
                     }
-                    MessageBox.Show("Данные были успешно добавлены.", "Информация",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    Loader(false);
+                    EndProcess("Данные были успешно добавлены.", true);
                 } 
             }
         }
@@ -240,11 +232,21 @@ namespace StarterTest.WinF
                 {
                     await Task.Run(() => exportXml.ExportToXml(searchCriterion, fileName));
 
-                    MessageBox.Show("Данные были успешно добавлены.", "Информация",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    Loader(false);
+                    EndProcess("Данные были успешно добавлены.", true);
                 }
             }
+        }
+        /// <summary>
+        /// Вывод сообщения и выключение загрузчика
+        /// </summary>
+        /// <param name="message">Сообщения об окончании работы экспорта</param>
+        /// <param name="state">Отключить загрузчик?</param>
+        void EndProcess(string message, bool state)
+        {
+            MessageBox.Show($"{message}", "Информация",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if(state)
+                Loader(false);
         }
         void Loader(bool state)
         {

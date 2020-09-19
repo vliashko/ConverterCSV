@@ -11,22 +11,21 @@ namespace StarterTest.BL
         public bool Result { get; private set; } = true;
         readonly Repository rp = new Repository();
         readonly DBContext db = new DBContext();
+        readonly int maxRowsInExcel = 1048576;
 
         public void ExportToExcel(User searchCriterion, string fileName)
         {
             List<User> users = rp.GetNecessaryUserList(searchCriterion);
-            if (users.Count > 1048576)
+            if (users.Count > maxRowsInExcel)
             {
                 Result = false;
                 return;
             }
+
             ExcelMapper mapper = new ExcelMapper();
-            CreateSaverForExcelExport(fileName, users, mapper);
+            mapper.Save(fileName, users, "Excel", true);
+
             users.Clear();
-        }
-        void CreateSaverForExcelExport(string FileName, List<User> users, ExcelMapper mapper)
-        {
-            mapper.Save(FileName, users, "Excel", true);
         }
         public virtual void Dispose(bool disposing)
         {
