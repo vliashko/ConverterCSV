@@ -33,12 +33,13 @@
             this.импортToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ImportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.работаСТаблицейToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.WorkWithTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ShowDataMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.ClearDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -65,8 +66,9 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.импортToolStripMenuItem,
-            this.работаСТаблицейToolStripMenuItem,
-            this.ShowDataMenuItem});
+            this.WorkWithTableToolStripMenuItem,
+            this.ShowDataMenuItem,
+            this.ClearDatabaseToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(870, 24);
@@ -85,46 +87,47 @@
             // ImportMenuItem
             // 
             this.ImportMenuItem.Name = "ImportMenuItem";
-            this.ImportMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.ImportMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ImportMenuItem.Text = "Импорт (.csv)";
             this.ImportMenuItem.Click += new System.EventHandler(this.ImportMenuItem_Click);
             // 
             // ExportMenuItem
             // 
             this.ExportMenuItem.Name = "ExportMenuItem";
-            this.ExportMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.ExportMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ExportMenuItem.Text = "Экспорт";
             this.ExportMenuItem.Click += new System.EventHandler(this.ExportMenuItem_Click);
             // 
-            // работаСТаблицейToolStripMenuItem
+            // WorkWithTableToolStripMenuItem
             // 
-            this.работаСТаблицейToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.WorkWithTableToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AddMenuItem,
             this.ChangeMenuItem,
             this.DeleteMenuItem});
-            this.работаСТаблицейToolStripMenuItem.Enabled = false;
-            this.работаСТаблицейToolStripMenuItem.Name = "работаСТаблицейToolStripMenuItem";
-            this.работаСТаблицейToolStripMenuItem.Size = new System.Drawing.Size(121, 20);
-            this.работаСТаблицейToolStripMenuItem.Text = "Работа с таблицей";
+            this.WorkWithTableToolStripMenuItem.Name = "WorkWithTableToolStripMenuItem";
+            this.WorkWithTableToolStripMenuItem.Size = new System.Drawing.Size(121, 20);
+            this.WorkWithTableToolStripMenuItem.Text = "Работа с таблицей";
             // 
             // AddMenuItem
             // 
             this.AddMenuItem.Name = "AddMenuItem";
-            this.AddMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.AddMenuItem.Size = new System.Drawing.Size(180, 22);
             this.AddMenuItem.Text = "Добавить запись";
             this.AddMenuItem.Click += new System.EventHandler(this.AddMenuItem_Click);
             // 
             // ChangeMenuItem
             // 
+            this.ChangeMenuItem.Enabled = false;
             this.ChangeMenuItem.Name = "ChangeMenuItem";
-            this.ChangeMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.ChangeMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ChangeMenuItem.Text = "Изменить запись";
             this.ChangeMenuItem.Click += new System.EventHandler(this.ChangeMenuItem_Click);
             // 
             // DeleteMenuItem
             // 
+            this.DeleteMenuItem.Enabled = false;
             this.DeleteMenuItem.Name = "DeleteMenuItem";
-            this.DeleteMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.DeleteMenuItem.Size = new System.Drawing.Size(180, 22);
             this.DeleteMenuItem.Text = "Удалить запись";
             this.DeleteMenuItem.Click += new System.EventHandler(this.DeleteMenuItem_Click);
             // 
@@ -173,12 +176,13 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem импортToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ImportMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem работаСТаблицейToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem WorkWithTableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AddMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ChangeMenuItem;
         private System.Windows.Forms.ToolStripMenuItem DeleteMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExportMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ShowDataMenuItem;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        public System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ToolStripMenuItem ClearDatabaseToolStripMenuItem;
     }
 }

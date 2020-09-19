@@ -1,7 +1,7 @@
 ﻿using CsvHelper.Configuration;
 using StarterTest.BL.Model;
 
-namespace StarterTest.WinF
+namespace StarterTest.BL
 {
     public class UserMap : ClassMap<User>
     {

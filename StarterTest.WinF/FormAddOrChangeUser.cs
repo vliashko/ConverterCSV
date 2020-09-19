@@ -62,5 +62,10 @@ namespace StarterTest.WinF
                 e.Handled = true;
             }
         }
+
+        private void FormAddOrChangeUser_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -194,6 +194,7 @@
             this.Name = "FormAddOrChangeUser";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Ввод данных";
+            this.Load += new System.EventHandler(this.FormAddOrChangeUser_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
