@@ -1,4 +1,5 @@
-﻿using StarterTest.BL;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using StarterTest.BL;
 using StarterTest.BL.Model;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,7 @@ namespace StarterTest.WinF
         }
         void LoadDbDate(List<User> users)
         {
+            dataGridView.Refresh();
             set.AddRange(users);
             dataGridView.DataSource = set.Local.ToBindingList();
             dataGridView.Sort(dataGridView.Columns["Id"], ListSortDirection.Ascending);
@@ -111,22 +113,27 @@ namespace StarterTest.WinF
         {
             var form = new FormAddOrChangeUser();
 
-            if (form.ShowDialog() == DialogResult.OK)
+            if (form.ShowDialog() == DialogResult.Yes)
             {
-                User user = form.User;
-                user.Id = db.Users.Count();
+                if (form.User != null)
+                {
+                    User user = form.User;
+                    user.Id = db.Users.Count();
 
-                try
-                {
-                    rp.Create(user);
-                    dataGridView.Refresh();
-                }
-                catch
-                {
-                    db.Users.Remove(user);
-                    MessageBox.Show("Вводимая дата должна быть в диапозоне:\n1/1/1753 - 12/31/9999", "Ошибка",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    try
+                    {
+                        rp.Create(user);
+                        rp.Save();
+
+                        MessageBox.Show("Запись была добавлена.", "Информация",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Вводимая дата должна быть в диапозоне:\n1/1/1753 - 12/31/9999\nЗапись не будет добавлена.", "Ошибка",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
             }
         }
@@ -136,7 +143,7 @@ namespace StarterTest.WinF
 
             var form = new FormAddOrChangeUser(user);
 
-            if (form.ShowDialog() == DialogResult.OK)
+            if (form.ShowDialog() == DialogResult.Yes)
             {
                 try
                 {
@@ -164,6 +171,7 @@ namespace StarterTest.WinF
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                 {
                     rp.Delete(user);
+                    dataGridView.Rows.RemoveAt(dataGridView.SelectedCells[0].RowIndex);
                     dataGridView.Refresh();
                 }
             }
@@ -238,7 +246,7 @@ namespace StarterTest.WinF
                 }
             }
         }
-        public void Loader(bool state)
+        void Loader(bool state)
         {
             if(state)
             {

@@ -150,7 +150,7 @@
             // 
             // button1
             // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.button1.DialogResult = System.Windows.Forms.DialogResult.Yes;
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button1.Location = new System.Drawing.Point(97, 183);
             this.button1.Name = "button1";
@@ -194,7 +194,6 @@
             this.Name = "FormAddOrChangeUser";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Ввод данных";
-            this.Load += new System.EventHandler(this.FormAddOrChangeUser_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

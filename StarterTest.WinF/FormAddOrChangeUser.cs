@@ -32,10 +32,12 @@ namespace StarterTest.WinF
         {
             var u = User ?? new User();
 
+            if (TryParseDate(maskedTextBox1.Text))
+                u.DateTime = DateTime.Parse(maskedTextBox1.Text);
+            else return;
             u.Name = textBox2.Text;
             u.Surname = textBox5.Text;
             u.MiddleName = textBox4.Text;
-            u.DateTime = DateTime.Parse(maskedTextBox1.Text);
             u.City = textBox3.Text;
             u.Country = textBox6.Text;
 
@@ -63,9 +65,19 @@ namespace StarterTest.WinF
             }
         }
 
-        private void FormAddOrChangeUser_Load(object sender, EventArgs e)
+        bool TryParseDate(string date)
         {
-
+            try
+            {
+                DateTime.Parse(date);
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Дата введена неверно.\nНеобходимый формат даты:\ndd.mm.yyyy\nЗапись не будет добавлена.", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
     }
 }
