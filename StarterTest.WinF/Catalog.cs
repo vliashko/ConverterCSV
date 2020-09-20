@@ -1,4 +1,5 @@
-﻿using StarterTest.BL;
+﻿using System.Data.SqlClient;
+using StarterTest.BL;
 using StarterTest.BL.Model;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Z.EntityFramework.Extensions;
+using DocumentFormat.OpenXml.Office2010.CustomUI;
 
 namespace StarterTest.WinF
 {
@@ -97,14 +99,10 @@ namespace StarterTest.WinF
 
                     if (importCsv.Result == false)
                     {
-                        MessageBox.Show("Файлы должны быть формата .csv", "Ошибка",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Loader(false);
+                        EndProcess("Файлы должны быть формата .csv", true);
                         return;
                     }
-                    MessageBox.Show("Данные были успешно добавлены.", "Информация",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    Loader(false);
+                    EndProcess("Данные были успешно добавлены.", true);
                 }
             }
         }
@@ -128,8 +126,7 @@ namespace StarterTest.WinF
                     }
                     catch
                     {
-                        MessageBox.Show("Вводимая дата должна быть в диапозоне:\n1/1/1753 - 12/31/9999\nЗапись не будет добавлена.", "Ошибка",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        EndProcess("Вводимая дата должна быть в диапозоне:\n1/1/1753 - 12/31/9999\nЗапись не будет добавлена.", false);
                         return;
                     }
                 }
@@ -152,8 +149,7 @@ namespace StarterTest.WinF
                 catch
                 {
                     _ = user;
-                    MessageBox.Show("Вводимая дата должна быть в диапозоне:\n1/1/1753 - 12/31/9999", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    EndProcess("Вводимая дата должна быть в диапозоне:\n1/1/1753 - 12/31/9999", false);
                     return;
                 }
             }
@@ -235,6 +231,12 @@ namespace StarterTest.WinF
                     EndProcess("Данные были успешно добавлены.", true);
                 }
             }
+        }
+        void ClearAllDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SqlQuery sqlQuery = new SqlQuery();
+            sqlQuery.ClearAllDataWithSql();
+            EndProcess("Данные были успешно удалены.", false);
         }
         /// <summary>
         /// Вывод сообщения и выключение загрузчика

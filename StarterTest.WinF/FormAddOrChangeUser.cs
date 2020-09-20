@@ -72,7 +72,7 @@ namespace StarterTest.WinF
                 DateTime.Parse(date);
                 return true;
             }
-            catch (Exception)
+            catch
             {
                 MessageBox.Show("Дата введена неверно.\nНеобходимый формат даты:\ndd.mm.yyyy\nЗапись не будет добавлена.", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);

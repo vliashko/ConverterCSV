@@ -38,8 +38,9 @@
             this.ChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ShowDataMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ClearAllDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sqlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.ClearDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -68,7 +69,8 @@
             this.импортToolStripMenuItem,
             this.WorkWithTableToolStripMenuItem,
             this.ShowDataMenuItem,
-            this.ClearDatabaseToolStripMenuItem});
+            this.ClearAllDatabaseToolStripMenuItem,
+            this.sqlToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(870, 24);
@@ -87,14 +89,14 @@
             // ImportMenuItem
             // 
             this.ImportMenuItem.Name = "ImportMenuItem";
-            this.ImportMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ImportMenuItem.Size = new System.Drawing.Size(149, 22);
             this.ImportMenuItem.Text = "Импорт (.csv)";
             this.ImportMenuItem.Click += new System.EventHandler(this.ImportMenuItem_Click);
             // 
             // ExportMenuItem
             // 
             this.ExportMenuItem.Name = "ExportMenuItem";
-            this.ExportMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ExportMenuItem.Size = new System.Drawing.Size(149, 22);
             this.ExportMenuItem.Text = "Экспорт";
             this.ExportMenuItem.Click += new System.EventHandler(this.ExportMenuItem_Click);
             // 
@@ -111,7 +113,7 @@
             // AddMenuItem
             // 
             this.AddMenuItem.Name = "AddMenuItem";
-            this.AddMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.AddMenuItem.Size = new System.Drawing.Size(168, 22);
             this.AddMenuItem.Text = "Добавить запись";
             this.AddMenuItem.Click += new System.EventHandler(this.AddMenuItem_Click);
             // 
@@ -119,7 +121,7 @@
             // 
             this.ChangeMenuItem.Enabled = false;
             this.ChangeMenuItem.Name = "ChangeMenuItem";
-            this.ChangeMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ChangeMenuItem.Size = new System.Drawing.Size(168, 22);
             this.ChangeMenuItem.Text = "Изменить запись";
             this.ChangeMenuItem.Click += new System.EventHandler(this.ChangeMenuItem_Click);
             // 
@@ -127,16 +129,28 @@
             // 
             this.DeleteMenuItem.Enabled = false;
             this.DeleteMenuItem.Name = "DeleteMenuItem";
-            this.DeleteMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.DeleteMenuItem.Size = new System.Drawing.Size(168, 22);
             this.DeleteMenuItem.Text = "Удалить запись";
             this.DeleteMenuItem.Click += new System.EventHandler(this.DeleteMenuItem_Click);
             // 
             // ShowDataMenuItem
             // 
             this.ShowDataMenuItem.Name = "ShowDataMenuItem";
-            this.ShowDataMenuItem.Size = new System.Drawing.Size(310, 20);
-            this.ShowDataMenuItem.Text = "Отобразить данные (может занять некоторое время)";
+            this.ShowDataMenuItem.Size = new System.Drawing.Size(127, 20);
+            this.ShowDataMenuItem.Text = "Отобразить данные";
             this.ShowDataMenuItem.Click += new System.EventHandler(this.ShowDataMenuItem_Click);
+            // 
+            // ClearAllDatabaseToolStripMenuItem
+            // 
+            this.ClearAllDatabaseToolStripMenuItem.Name = "ClearAllDatabaseToolStripMenuItem";
+            this.ClearAllDatabaseToolStripMenuItem.Size = new System.Drawing.Size(142, 20);
+            this.ClearAllDatabaseToolStripMenuItem.Text = "Очистить базу данных";
+            this.ClearAllDatabaseToolStripMenuItem.Click += new System.EventHandler(this.ClearAllDatabaseToolStripMenuItem_Click);
+            // 
+            // sqlToolStripMenuItem
+            // 
+            this.sqlToolStripMenuItem.Name = "sqlToolStripMenuItem";
+            this.sqlToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
             // 
             // pictureBox1
             // 
@@ -183,6 +197,7 @@
         private System.Windows.Forms.ToolStripMenuItem ExportMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ShowDataMenuItem;
         public System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.ToolStripMenuItem ClearDatabaseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ClearAllDatabaseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sqlToolStripMenuItem;
     }
 }
