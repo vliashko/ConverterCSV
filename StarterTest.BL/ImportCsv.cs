@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace StarterTest.BL
 {
@@ -22,7 +23,7 @@ namespace StarterTest.BL
         }
         public void ImportFromCsv(string fileName)
         {
-            using (StreamReader sr = new StreamReader(fileName))
+            using (StreamReader sr = new StreamReader(fileName, Encoding.Default))  
             {
                 var csv = new CsvReader(sr, CultureInfo.CurrentCulture);
                 csv.Configuration.HasHeaderRecord = false;

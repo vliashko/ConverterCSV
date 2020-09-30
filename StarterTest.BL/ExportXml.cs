@@ -19,7 +19,7 @@ namespace StarterTest.BL
 
             using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
             {
-                using (XmlTextWriter xmlOut = new XmlTextWriter(fs, Encoding.Unicode))
+                using (XmlTextWriter xmlOut = new XmlTextWriter(fs, Encoding.Default))
                 {
                     xmlOut.Formatting = Formatting.Indented;
 

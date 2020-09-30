@@ -1,5 +1,4 @@
-﻿using System.Data.SqlClient;
-using StarterTest.BL;
+﻿using StarterTest.BL;
 using StarterTest.BL.Model;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Z.EntityFramework.Extensions;
-using DocumentFormat.OpenXml.Office2010.CustomUI;
 
 namespace StarterTest.WinF
 {
