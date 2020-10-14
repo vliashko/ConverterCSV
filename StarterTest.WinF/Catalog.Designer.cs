@@ -30,7 +30,7 @@
         {
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.импортToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ImportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WorkWithTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,7 +66,7 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.импортToolStripMenuItem,
+            this.ImportToolStripMenuItem,
             this.WorkWithTableToolStripMenuItem,
             this.ShowDataMenuItem,
             this.ClearAllDatabaseToolStripMenuItem,
@@ -77,26 +77,26 @@
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // импортToolStripMenuItem
+            // ImportToolStripMenuItem
             // 
-            this.импортToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ImportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ImportMenuItem,
             this.ExportMenuItem});
-            this.импортToolStripMenuItem.Name = "импортToolStripMenuItem";
-            this.импортToolStripMenuItem.Size = new System.Drawing.Size(120, 20);
-            this.импортToolStripMenuItem.Text = "Работа с данными";
+            this.ImportToolStripMenuItem.Name = "ImportToolStripMenuItem";
+            this.ImportToolStripMenuItem.Size = new System.Drawing.Size(120, 20);
+            this.ImportToolStripMenuItem.Text = "Работа с данными";
             // 
             // ImportMenuItem
             // 
             this.ImportMenuItem.Name = "ImportMenuItem";
-            this.ImportMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.ImportMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ImportMenuItem.Text = "Импорт (.csv)";
             this.ImportMenuItem.Click += new System.EventHandler(this.ImportMenuItem_Click);
             // 
             // ExportMenuItem
             // 
             this.ExportMenuItem.Name = "ExportMenuItem";
-            this.ExportMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.ExportMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ExportMenuItem.Text = "Экспорт";
             this.ExportMenuItem.Click += new System.EventHandler(this.ExportMenuItem_Click);
             // 
@@ -188,7 +188,7 @@
 
         private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem импортToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ImportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ImportMenuItem;
         private System.Windows.Forms.ToolStripMenuItem WorkWithTableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AddMenuItem;

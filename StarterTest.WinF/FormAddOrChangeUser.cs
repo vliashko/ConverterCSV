@@ -15,7 +15,7 @@ namespace StarterTest.WinF
         public FormAddOrChangeUser(User user) : this()
         {
             User = user;
-            maskedTextBox1.Text = user.DateTime.ToString("dd.MM.yyyy");
+            dateTimePicker1.Text = user.DateTime.ToString("dd.MM.yyyy");
             textBox2.Text = user.Name;
             textBox5.Text = user.Surname;
             textBox4.Text = user.MiddleName;
@@ -32,9 +32,7 @@ namespace StarterTest.WinF
         {
             var u = User ?? new User();
 
-            if (TryParseDate(maskedTextBox1.Text))
-                u.DateTime = DateTime.Parse(maskedTextBox1.Text);
-            else return;
+            u.DateTime = DateTime.Parse(dateTimePicker1.Text);
             u.Name = textBox2.Text;
             u.Surname = textBox5.Text;
             u.MiddleName = textBox4.Text;

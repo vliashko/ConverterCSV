@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StarterTest.BL
@@ -62,6 +64,11 @@ namespace StarterTest.BL
             }
             return users;
         }
+
+        //Task<IEnumerable<User>> GetUsersAsync(Expression<Func<User, bool>> predicate)
+        //{
+
+        //}
 
         public User GetUser(int id)
         {

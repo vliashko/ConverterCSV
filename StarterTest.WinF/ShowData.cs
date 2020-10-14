@@ -27,11 +27,7 @@ namespace StarterTest.WinF
                 u.MiddleName = textBox4.Text;
             else
                 u.MiddleName = null;
-            if ((String.IsNullOrEmpty(maskedTextBox1.Text) || String.IsNullOrWhiteSpace(maskedTextBox1.Text))
-                    && maskedTextBox1.Text.Length == 8)
-                u.DateTime = DateTime.Parse(maskedTextBox1.Text);
-            else
-                u.DateTime = DateTime.MinValue;
+            u.DateTime = DateTime.Parse(dateTimePicker1.Text);
             if (textBox3.Text != "")
                 u.City = textBox3.Text;
             else
